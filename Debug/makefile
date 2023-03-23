@@ -56,6 +56,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 trac_console.list \
 
+OBJCOPY_BIN += \
+trac_console.bin \
+
 
 # All Target
 all: main-build
@@ -79,12 +82,17 @@ trac_console.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+trac_console.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "trac_console.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) default.size.stdout trac_console.elf trac_console.list trac_console.map
+	-$(RM) default.size.stdout trac_console.bin trac_console.elf trac_console.list trac_console.map
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
